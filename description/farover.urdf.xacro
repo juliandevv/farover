@@ -1,0 +1,100 @@
+<robot name="onshape">
+
+<!-- Base link -->
+<link name="base_link"></link>
+
+<joint name="body_joint" type="fixed">
+<parent link="base_link"/>
+<child link="body"/>
+<origin xyz="1 0 0"/>
+</joint>
+
+<link name="body">
+<visual>
+<origin xyz="-0.049438371373583062107 0.038916446977440039001 -0.032745684636874022866" rpy="0 -0 0" />
+<geometry>
+<mesh filename="file://$(find farover)/description/body.stl"/>
+</geometry>
+<material name="body_material">
+<color rgba="0.61568627450980395466 0.81176470588235294379 0.92941176470588238168 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="-0.049438371373583062107 0.038916446977440039001 -0.032745684636874022866" rpy="0 -0 0" />
+<geometry>
+<mesh filename="file://$(find farover)/description/body.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="-0.050437072995593044966 -0.036083553966234360733 -0.0086358030611483060923" rpy="0 0 0"/>
+<mass value="0.27083496111489868685" />
+<inertia ixx="0.00077851076932966101034" ixy="-2.145723912963746639e-11"  ixz="-9.9564004326383460084e-06" iyy="0.00077444774224239227092" iyz="-4.2854618900597856079e-12" izz="0.0013316709222071683449" />
+</inertial>
+</link>
+
+<link name="wheel">
+<visual>
+<origin xyz="0 0 -0.025000000000000008327" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="file://$(find farover)/description/wheel.stl"/>
+</geometry>
+<material name="wheel_material">
+<color rgba="0.61568627450980395466 0.81176470588235294379 0.92941176470588238168 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 -0.025000000000000008327" rpy="-1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="file://$(find farover)/description/wheel.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="5.6170616882174377631e-20 2.8757639686487362962e-18 -0.012500000000000011102" rpy="0 0 0"/>
+<mass value="0.11780972450961728348" />
+<inertia ixx="4.295146206079797146e-05" ixy="0"  ixz="0" iyy="4.295146206079797146e-05" iyz="0" izz="7.3631077818510817898e-05" />
+</inertial>
+</link>
+
+<joint name="wheel1_joint" type="continuous">
+<origin xyz="-0.0094383713735830820912 -0.1360835530225599499 -0.01274568463687401898" rpy="1.570796326794896558 -0 0" />
+<parent link="body" />
+<child link="wheel" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" />
+<joint_properties friction="0.0"/>
+</joint>
+
+<link name="wheel_2">
+<visual>
+<origin xyz="0 0 0" rpy="1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="file://$(find farover)/description/wheel.stl"/>
+</geometry>
+<material name="wheel_material">
+<color rgba="0.61568627450980395466 0.81176470588235294379 0.92941176470588238168 1.0"/>
+</material>
+</visual>
+<collision>
+<origin xyz="0 0 0" rpy="1.570796326794896558 -0 0" />
+<geometry>
+<mesh filename="file://$(find farover)/description/wheel.stl"/>
+</geometry>
+</collision>
+<inertial>
+<origin xyz="5.6170616882174377631e-20 -2.8757639686487362962e-18 -0.012499999999999997224" rpy="0 0 0"/>
+<mass value="0.11780972450961728348" />
+<inertia ixx="4.295146206079797146e-05" ixy="0"  ixz="0" iyy="4.295146206079797146e-05" iyz="0" izz="7.3631077818510817898e-05" />
+</inertial>
+</link>
+
+<joint name="wheel2_joint" type="continuous">
+<origin xyz="-0.0094383713735830820912 0.06391644697744003345 -0.01274568463687401898" rpy="-1.570796326794896558 -0 0" />
+<parent link="body" />
+<child link="wheel_2" />
+<axis xyz="0 0 1"/>
+<limit effort="1" velocity="20" />
+<joint_properties friction="0.0"/>
+</joint>
+
+
+</robot>
