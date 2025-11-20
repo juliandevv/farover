@@ -1,4 +1,4 @@
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="onshape">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="farover">
 
 <material name="white">
     <color rgba="1 1 1 1"/>
@@ -16,34 +16,51 @@
     <color rgba="0 0 0 1"/>
 </material>
 
+<xacro:property name="base_width" value="0.31"/>
+
+<xacro:property name="base_length" value="0.42"/>
+
+<xacro:property name="base_height" value="0.18"/>
+
+<xacro:property name="wheel_radius" value="0.10"/>
+
+<xacro:property name="wheel_width" value="0.04"/>
+
+<xacro:property name="wheel_ygap" value="0.025"/>
+
+<xacro:property name="wheel_zoff" value="0.05"/>
+
+<xacro:property name="wheel_xoff" value="0.12"/>
+
+
+<xacro:property name="caster_xoff" value="0.14"/>
+
 <link name="base_link"></link>
 
 <joint name="chassis_joint" type="fixed">
     <parent link="base_link"/>
     <child link="chassis"/>
-    <origin xyz="-0.1 0 0"/>
+    <origin xyz="0.0 0.0 ${(wheel_radius+wheel_zoff)}" rpy="0 0 0"/>
 </joint>
 
 <link name="chassis">
 
     <visual>
-        <origin xyz="0.15 0 0.075" rpy="0 0 0"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
-            <box size="0.3 0.3 0.15"/>
+            <box size="${base_length} ${base_width} ${base_height}"/>
         </geometry>
         <material name="white"/>
     </visual>
 
     <collision>
-        <origin xyz="0.15 0 0.075" rpy="0 0 0"/>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
         <geometry>
-            <box size="0.3 0.3 0.15"/>
+            <box size="${base_length} ${base_width} ${base_height}"/>
         </geometry>
     </collision>
 
-    <xacro:inertial_box mass="0.5" x="0.3" y="0.3" z="0.15">
-        <origin xyz="0.15 0 0.075" rpy="0 0 0"/>
-    </xacro:inertial_box>
+    <xacro:box_inertia m="15" w="${base_width}" d="${base_length}" h="${base_height}"/>
 
 </link>
 
@@ -51,108 +68,107 @@
     <material>Gazebo/White</material>
 </gazebo>
 
-<!-- LEFT WHEEL -->
+<!-- Wheels -->
 
-<joint name="left_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="left_wheel"/>
-    <origin xyz="0 0.175 0" rpy="-${pi/2} 0 0"/>
-    <axis xyz="0 0 1"/>
-</joint>
+<xacro:macro name="wheel" params="prefix x_reflect y_reflect">
 
-<link name="left_wheel">
+<link name="${prefix}_link">
 
-    <visual>
-        <geometry>
-            <cylinder length="0.04" radius="0.05" />
-        </geometry>
-        <material name="blue"/>
-    </visual>
+  <visual>
+    <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
 
-    <collision>
-        <origin xyz="0 0.175 0" rpy="-${pi/2} 0 0"/>
-        <geometry>
-            <cylinder length="0.04" radius="0.05" />
-        </geometry>
-    </collision>
+    <geometry>
 
-    <xacro:inertial_cylinder mass="0.1" length="0.05" radius="0.05">
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-    </xacro:inertial_cylinder>
+        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
 
-</link>
+    </geometry>
 
-<gazebo reference="left_wheel">
-    <material>Gazebo/Gray</material>
-</gazebo>
+    <material name="Gray">
 
-<!-- RIGHT WHEEL -->
+      <color rgba="0.5 0.5 0.5 1.0"/>
 
-<joint name="right_wheel_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="right_wheel"/>
-    <origin xyz="0 -0.175 0" rpy="${pi/2} 0 0"/>
-    <axis xyz="0 0 -1"/>
-</joint>
+    </material>
+  </visual>
 
-<link name="right_wheel">
+  <collision>
+    <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
+    <geometry>
 
-    <visual>
-        <geometry>
-            <cylinder length="0.04" radius="0.05" />
-        </geometry>
-        <material name="blue"/>
-    </visual>
+      <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
 
-    <collision>
-        <origin xyz="0 -0.175 0" rpy="${pi/2} 0 0"/>
-        <geometry>
-            <cylinder length="0.04" radius="0.05"/>
-        </geometry>s
-    </collision>
+    </geometry>
+  </collision>
 
-    <xacro:inertial_cylinder mass="0.1" length="0.05" radius="0.05">
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-    </xacro:inertial_cylinder>
+  <xacro:cylinder_inertia m="0.5" r="${wheel_radius}" h="${wheel_width}"/>
 
 </link>
 
-<gazebo reference="right_wheel">
-    <material>Gazebo/Gray</material>
-</gazebo>
+
+<joint name="${prefix}_joint" type="continuous">
+
+  <parent link="chassis"/>
+
+  <child link="${prefix}_link"/>
+
+  <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*(base_width/2+wheel_ygap)} ${-wheel_zoff}" rpy="0 0 0"/>
+
+  <axis xyz="0 1 0"/>
+
+</joint>
+
+</xacro:macro>
+
+
+<xacro:wheel prefix="drivewhl_l" x_reflect="-1" y_reflect="1" />
+
+<xacro:wheel prefix="drivewhl_r" x_reflect="-1" y_reflect="-1" />
 
 <!-- CASTER WHEEL -->
 
-<joint name="caster_wheel_joint" type="fixed">
-    <parent link="chassis"/>
-    <child link="caster_wheel"/>
-    <origin xyz="0.24 0 0" rpy="0 0 0"/>
-</joint>
-
-<link name="caster_wheel">
+<link name="front_caster">
 
     <visual>
-        <geometry>
-            <sphere radius="0.05" />
-        </geometry>
-        <material name="black"/>
+      <geometry>
+
+        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+
+      </geometry>
+
+      <material name="Cyan">
+
+        <color rgba="0 1.0 1.0 1.0"/>
+
+      </material>
     </visual>
 
     <collision>
-        <origin xyz="0.24 0 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-            <sphere radius="0.05" />
+
+            <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+
         </geometry>
     </collision>
+  
+    <xacro:sphere_inertia m="0.5" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
 
-    <xacro:inertial_sphere mass="0.1" radius="0.05">
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-    </xacro:inertial_sphere>
+  </link>
 
-</link>
+    <gazebo reference="front_caster">
+        <material>Gazebo/Black</material>
+        <mu1 value="0.001"/>
+        <mu2 value="0.001"/>
+    </gazebo>
 
-<gazebo reference="caster_wheel">
-    <material>Gazebo/Black</material>
-</gazebo>
+
+  <joint name="caster_joint" type="fixed">
+
+    <parent link="chassis"/>
+
+    <child link="front_caster"/>
+
+    <origin xyz="${caster_xoff} 0.0 ${-(base_height/2)}" rpy="0 0 0"/>
+
+  </joint>
 
 </robot>

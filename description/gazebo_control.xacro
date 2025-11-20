@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="farover">
 
     <gazebo>
         <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
     
-    
             <!-- Wheel Information -->
-            <left_joint>left_wheel_joint</left_joint>
-            <right_joint>right_wheel_joint</right_joint>
-            <wheel_separation>0.15</wheel_separation>
-            <wheel_diameter>0.07</wheel_diameter>
+            <left_joint>drivewhl_l_joint</left_joint>
+            <right_joint>drivewhl_r_joint</right_joint>
+            <wheel_separation>${wheel_ygap}</wheel_separation>
+            <wheel_diameter>${2 * wheel_radius}</wheel_diameter>
     
 
             <!-- Limits -->
@@ -24,7 +23,6 @@
             <publish_odom>true</publish_odom>
             <publish_odom_tf>true</publish_odom_tf>
             <publish_wheel_tf>true</publish_wheel_tf>
-    
     
         </plugin>
     </gazebo>

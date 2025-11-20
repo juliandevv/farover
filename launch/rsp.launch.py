@@ -3,8 +3,9 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import UnlessCondition, IfCondition
 from launch_ros.actions import Node
 
 import xacro
@@ -28,14 +29,32 @@ def generate_launch_description():
         output='screen',
         parameters=[params]
     )
+    # joint_state_publisher_node = Node(
+    #     package='joint_state_publisher',
+    #     executable='joint_state_publisher',
+    #     name='joint_state_publisher',
+    #     parameters=[{'robot_description': robot_description_config.toxml(), 'use_sim_time': use_sim_time}],
+    # )
+    # joint_state_publisher_gui_node = Node(
+    #     package='joint_state_publisher_gui',
+    #     executable='joint_state_publisher_gui',
+    #     name='joint_state_publisher_gui',
+    # )
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+    )
 
 
     # Launch
-    return LaunchDescription([
+    return LaunchDescription([  
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='false',
+            default_value='True',
             description='Use sim time if true'),
 
-        node_robot_state_publisher
+        node_robot_state_publisher,
+        rviz_node
     ])
