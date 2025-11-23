@@ -2,28 +2,29 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="farover">
 
     <gazebo>
-        <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
-    
-            <!-- Wheel Information -->
-            <left_joint>drivewhl_l_joint</left_joint>
-            <right_joint>drivewhl_r_joint</right_joint>
+        <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
+            <!-- Remove <ros> tag. -->
+          
+            <!-- wheels -->
+            <left_joint>drivewhl_l</left_joint>
+            <right_joint>drivewhl_r</right_joint>
+          
+            <!-- kinematics -->
             <wheel_separation>${wheel_ygap}</wheel_separation>
-            <wheel_diameter>${2 * wheel_radius}</wheel_diameter>
-    
-
-            <!-- Limits -->
-            <max_wheel_torque>200</max_wheel_torque>
-            <max_wheel_acceleration>10.0</max_wheel_acceleration>
-    
-
-            <!-- Output -->
-            <odometry_frame>odom</odometry_frame>
-            <robot_base_frame>base_link</robot_base_frame>
-
-            <publish_odom>true</publish_odom>
-            <publish_odom_tf>true</publish_odom_tf>
-            <publish_wheel_tf>true</publish_wheel_tf>
-    
-        </plugin>
+            <wheel_radius>${wheel_radius}</wheel_radius> <!-- computed from <wheel_diameter> in the original plugin-->
+          
+            <!-- limits -->
+            <max_linear_acceleration>10</max_linear_acceleration> <!-- computed from <max_linear_acceleration> in the original plugin-->
+          
+            <topic>cmd_vel</topic> <!-- from <commant_topic> -->
+          
+            <odom_topic>odom</odom_topic> <!-- from <odometry_topic> -->
+            <frame_id>odom</frame_id> <!-- from <odometry_frame> -->
+            <child_frame_id>base_link</child_frame_id> <!-- from <robot_base_frame> -->
+            <odom_publisher_frequency>30</odom_publisher_frequency> <!-- from <update_rate>-->
+          
+            <tf_topic>/tf</tf_topic> <!-- Short topic name for tf output -->
+          
+          </plugin>
     </gazebo>
 </robot>
