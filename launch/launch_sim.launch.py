@@ -35,7 +35,7 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(gz_launch_path),
             launch_arguments={
-                'gz_args': 'empty.world',  # Replace with your own world file
+                'gz_args': PathJoinSubstitution([pkg_path, 'worlds/empty.world']),  # Replace with your own world file
                 'on_exit_shutdown': 'True'
             }.items(),
     )
